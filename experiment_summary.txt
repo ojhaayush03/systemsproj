@@ -1,0 +1,8 @@
+
+=== Trial 1 ===
+CFS file: trial1_run1_latency.csv
+PTLS file: trial1_run2_latency.csv
+
+=== Trial 2 ===
+CFS file: trial2_run1_latency.csv
+PTLS file: trial2_run2_latency.csv

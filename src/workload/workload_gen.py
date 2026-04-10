@@ -15,7 +15,7 @@ LAT_LOG  = os.path.join(DATA_DIR, "latency_log.csv")
 
 N_LC    = 3     # latency-critical workers
 N_BG    = 1     # background workers
-LC_RATE = 15    # base requests/sec
+LC_RATE = 20    # base requests/sec
 
 
 def _write_pid(filepath, pid):
