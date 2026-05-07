@@ -1,8 +1,24 @@
 
-=== Trial 1 ===
-CFS file: trial1_run1_latency.csv
-PTLS file: trial1_run2_latency.csv
+=== Trial 1 | LC=-5 BG=15 (gap=20) ===
+CFS  file: trial1_cfs_lc-5_bg15_latency.csv
+PTLS file: trial1_ptls_lc-5_bg15_latency.csv
 
-=== Trial 2 ===
-CFS file: trial2_run1_latency.csv
-PTLS file: trial2_run2_latency.csv
+=== Trial 2 | LC=-5 BG=15 (gap=20) ===
+CFS  file: trial2_cfs_lc-5_bg15_latency.csv
+PTLS file: trial2_ptls_lc-5_bg15_latency.csv
+
+=== Trial 1 | LC=-10 BG=15 (gap=25) ===
+CFS  file: trial1_cfs_lc-10_bg15_latency.csv
+PTLS file: trial1_ptls_lc-10_bg15_latency.csv
+
+=== Trial 2 | LC=-10 BG=15 (gap=25) ===
+CFS  file: trial2_cfs_lc-10_bg15_latency.csv
+PTLS file: trial2_ptls_lc-10_bg15_latency.csv
+
+=== Trial 1 | LC=-10 BG=19 (gap=29) ===
+CFS  file: trial1_cfs_lc-10_bg19_latency.csv
+PTLS file: trial1_ptls_lc-10_bg19_latency.csv
+
+=== Trial 2 | LC=-10 BG=19 (gap=29) ===
+CFS  file: trial2_cfs_lc-10_bg19_latency.csv
+PTLS file: trial2_ptls_lc-10_bg19_latency.csv

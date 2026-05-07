@@ -1,0 +1,10 @@
+
+=== Trial 1 ===
+Labelled:   trial1_labelled_latency.csv
+Classified: trial1_classified_latency.csv
+Signals:    trial1_classified_signals.csv
+
+=== Trial 2 ===
+Labelled:   trial2_labelled_latency.csv
+Classified: trial2_classified_latency.csv
+Signals:    trial2_classified_signals.csv

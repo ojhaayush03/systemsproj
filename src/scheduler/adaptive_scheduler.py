@@ -1,10 +1,9 @@
 """
 static_priority_scheduler.py
 
-Insight: service time variance dominates tail latency, not queue depth.
-The BG worker steals CPU during LC service windows (13ms compute tasks).
-Fix: permanently suppress BG, permanently boost LC.
-No feedback loop needed — the signal doesn't change fast enough to matter.
+Reads NICE_LC and NICE_BG from environment variables when launched
+by run_experiment.py, so the sensitivity sweep never needs to edit
+this file. Falls back to -5 / +15 if run standalone.
 """
 
 import os
@@ -18,8 +17,9 @@ LAT_FILE     = os.path.join(DATA_DIR, "latency_pids.txt")
 BG_FILE      = os.path.join(DATA_DIR, "background_pids.txt")
 DECISION_LOG = os.path.join(DATA_DIR, "decisions.csv")
 
-NICE_LC = -5    # boost LC workers
-NICE_BG = +15   # maximally suppress BG — still scheduled, never starved
+# Read from env if launched by run_experiment.py, else use defaults
+NICE_LC = int(os.environ.get("NICE_LC", -5))
+NICE_BG = int(os.environ.get("NICE_BG", +15))
 
 
 def read_pids(filepath):
@@ -53,7 +53,6 @@ def log(pid, ptype, nice, success):
 
 
 def apply_priorities():
-    """Set priorities once and verify they stuck."""
     lc_pids = read_pids(LAT_FILE)
     bg_pids = read_pids(BG_FILE)
 
@@ -77,7 +76,6 @@ def apply_priorities():
 
 
 def verify_priorities():
-    """Read back nice values from /proc to confirm they stuck."""
     for filepath, label in [(LAT_FILE, "LC"), (BG_FILE, "BG")]:
         for pid in read_pids(filepath):
             try:
@@ -90,10 +88,9 @@ def verify_priorities():
 def run_scheduler():
     init_log()
     print("[Scheduler] Static priority mode")
-    print(f"[Scheduler] Target: LC=nice{NICE_LC}, BG=nice+{NICE_BG}")
+    print(f"[Scheduler] NICE_LC={NICE_LC}  NICE_BG={NICE_BG}  GAP={NICE_BG - NICE_LC}")
     print("[Scheduler] Waiting for PIDs...")
 
-    # Wait until workload has registered its PIDs
     for _ in range(30):
         lc_pids = read_pids(LAT_FILE)
         bg_pids = read_pids(BG_FILE)
@@ -104,24 +101,21 @@ def run_scheduler():
         print("[Scheduler] ERROR: PIDs never appeared. Check workload.")
         return
 
-    # Apply once
     applied = apply_priorities()
     if not applied:
         print("[Scheduler] ERROR: No PIDs found after waiting.")
         return
 
-    # Verify they stuck
     time.sleep(0.5)
     verify_priorities()
 
     print("\n[Scheduler] Priorities set. Monitoring for new PIDs every 10s...")
 
-    # Light maintenance loop — only re-apply if PIDs change (e.g. worker crash/restart)
     known_lc = set(read_pids(LAT_FILE))
     known_bg = set(read_pids(BG_FILE))
 
     while True:
-        time.sleep(10)   # 10s poll — negligible overhead
+        time.sleep(10)
         current_lc = set(read_pids(LAT_FILE))
         current_bg = set(read_pids(BG_FILE))
 
